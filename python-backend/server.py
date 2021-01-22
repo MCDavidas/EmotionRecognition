@@ -7,55 +7,38 @@ import yaml
 
 logging.basicConfig()
 
-STATE = {"value": 0}
-
-USERS = set()
-
-
-def state_event():
-    return json.dumps({"type": "state", **STATE})
-
-
-def users_event():
-    return json.dumps({"type": "users", "count": len(USERS)})
-
-
-async def notify_state():
-    if USERS:  # asyncio.wait doesn't accept an empty list
-        message = state_event()
-        await asyncio.wait([user.send(message) for user in USERS])
-
-
-async def notify_users():
-    if USERS:  # asyncio.wait doesn't accept an empty list
-        message = users_event()
-        await asyncio.wait([user.send(message) for user in USERS])
+connected_users = set()
 
 
 async def register(websocket):
-    USERS.add(websocket)
-    await notify_users()
+    connected_users.add(websocket)
 
 
 async def unregister(websocket):
-    USERS.remove(websocket)
-    await notify_users()
+    connected_users.remove(websocket)
+
+
+async def write_back(websocket, message):
+    await websocket.send(message)
+
+
+async def analyze(data):
+    await asyncio.sleep(3)
+    return 'OK'
 
 
 async def handler(websocket, path):
     await register(websocket)
     try:
-        await websocket.send(state_event())
         async for message in websocket:
+            await write_back(websocket,
+                             json.dumps({"type": "answer",
+                                         "value": "waiting..."}))
             data = json.loads(message)
-            if data["action"] == "minus":
-                STATE["value"] -= 1
-                await notify_state()
-            elif data["action"] == "plus":
-                STATE["value"] += 1
-                await notify_state()
-            else:
-                logging.error("unsupported event: {}", data)
+            answer = await analyze(data)
+            await write_back(websocket,
+                             json.dumps({"type": "answer",
+                                         "value": answer}))
     finally:
         await unregister(websocket)
 
@@ -72,7 +55,7 @@ def init_server():
         start_server = websockets.serve(handler,
                                         configuration['details']['host'],
                                         configuration['details']['port'])
-    except:
+    except Exception:
         print("Error! Incorrect config file.")
         return
 
