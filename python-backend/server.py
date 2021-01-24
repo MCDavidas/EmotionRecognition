@@ -3,6 +3,9 @@ import json
 import logging
 import websockets
 import yaml
+from PIL import Image, ImageFilter
+
+from converter import ascii2image, image2ascii
 
 
 logging.basicConfig()
@@ -22,9 +25,11 @@ async def write_back(websocket, message):
     await websocket.send(message)
 
 
-async def analyze(data):
+async def analyze(img):
     await asyncio.sleep(3)
-    return 'OK'
+    result_img = img.transpose(Image.FLIP_LEFT_RIGHT)
+    result_img.format = img.format
+    return result_img
 
 
 async def handler(websocket, path):
@@ -32,13 +37,22 @@ async def handler(websocket, path):
     try:
         async for message in websocket:
             await write_back(websocket,
-                             json.dumps({"type": "answer",
-                                         "value": "waiting..."}))
+                             json.dumps({'type': 'text',
+                                         'value': 'waiting...'}))
+
             data = json.loads(message)
-            answer = await analyze(data)
-            await write_back(websocket,
-                             json.dumps({"type": "answer",
-                                         "value": answer}))
+
+            if data['type'] == 'image':
+                img = ascii2image(data['image'])
+                answer_img = await analyze(img)
+
+                message = json.dumps({'type': 'image',
+                                      'image': image2ascii(answer_img)})
+
+                await write_back(websocket, message)
+            else:
+                message = json.dumps({'type': 'text', 'value...': 'no image'})
+
     finally:
         await unregister(websocket)
 
