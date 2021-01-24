@@ -13,6 +13,32 @@ logging.basicConfig()
 connected_users = set()
 
 
+async def handle_input_message(message):
+
+    def handle_format_error():
+        print('Incorrect input message!')
+        return json.dumps({'type': 'error',
+                           'value': 'Incorrect input message!'})
+
+    try:
+        json_data = json.loads(message)
+    except json.JSONDecodeError:
+        return handle_format_error()
+
+    if 'type' not in json_data:
+        return handle_format_error()
+
+    if json_data['type'] == 'image':
+        if 'image' not in json_data:
+            return handle_format_error()
+        else:
+            answer_img = await analyze_image(json_data['image'])
+            return json.dumps({'type': 'image',
+                               'image': image2ascii(answer_img)})
+    else:
+        return handle_format_error()
+
+
 async def register(websocket):
     connected_users.add(websocket)
 
@@ -25,7 +51,8 @@ async def write_back(websocket, message):
     await websocket.send(message)
 
 
-async def analyze(img):
+async def analyze_image(img_ascii):
+    img = ascii2image(img_ascii)
     await asyncio.sleep(3)
     result_img = img.transpose(Image.FLIP_LEFT_RIGHT)
     result_img.format = img.format
@@ -40,18 +67,8 @@ async def handler(websocket, path):
                              json.dumps({'type': 'text',
                                          'value': 'waiting...'}))
 
-            data = json.loads(message)
-
-            if data['type'] == 'image':
-                img = ascii2image(data['image'])
-                answer_img = await analyze(img)
-
-                message = json.dumps({'type': 'image',
-                                      'image': image2ascii(answer_img)})
-
-                await write_back(websocket, message)
-            else:
-                message = json.dumps({'type': 'text', 'value...': 'no image'})
+            answer_message = await handle_input_message(message)
+            await write_back(websocket, answer_message)
 
     finally:
         await unregister(websocket)
