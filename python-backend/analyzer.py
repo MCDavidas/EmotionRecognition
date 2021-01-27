@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import tensorflow
 from PIL import Image, ImageFilter
 
@@ -11,6 +12,7 @@ model = tensorflow.keras.models.load_model('model.h5')
 
 
 async def analyze_image(img):
+    logging.info('Starting image analyse')
     '''
     while True:
         ret, frame = cap.read()

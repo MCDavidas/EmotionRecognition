@@ -13,6 +13,7 @@ connected_users = set()
 
 
 async def handle_input_message(message):
+    logging.info('Starting message parsing')
 
     def handle_format_error():
         logging.warning('Incorrect input message')
@@ -76,10 +77,11 @@ async def handler(websocket, path):
 
 
 def init_server():
+    logging_format = '%(asctime)s %(levelname)s: %(message)s'
     logging_level = logging.WARNING
     logging_filename = 'server.log'
 
-    logging.basicConfig(level=logging_level)
+    logging.basicConfig(level=logging_level, format=logging_format)
 
     try:
         with open("config.yaml", "r") as config_file:
@@ -107,7 +109,7 @@ def init_server():
 
             logging.getLogger().setLevel(logging_level)
 
-        logging.info('Opening websocket...')
+        logging.info('Opening websocket')
         start_server = websockets.serve(handler,
                                         configuration['server']['host'],
                                         configuration['server']['port'],
