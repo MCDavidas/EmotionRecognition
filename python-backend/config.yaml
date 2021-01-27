@@ -1,3 +1,6 @@
-details:
+server:
   host: 'localhost'
-  port: 6789
+  port: 56789
+
+logging:
+  level: 'INFO'
