@@ -9,7 +9,7 @@ from PIL import Image
 emotion_dict = {0: "Angry", 1: "Disgust", 2: "Fear",
                 3: "Happy", 4: "Sad", 5: "Surprise", 6: "Neutral"}
 
-model = tensorflow.keras.models.load_model('model.h5')
+model = tensorflow.keras.models.load_model('./data/model.h5')
 
 
 async def analyze_image(img):
@@ -20,7 +20,7 @@ async def analyze_image(img):
 
     logging.debug(str(type(image_ndarray)))
 
-    face_cascade = cv2.CascadeClassifier('./haarcascade_frontface_default.xml')
+    face_cascade = cv2.CascadeClassifier('./data/haarcascade_frontface_default.xml')
     faces = face_cascade.detectMultiScale(gray, 1.2, 5)
     logging.debug('faces count: ' + str(len(faces)))
 
