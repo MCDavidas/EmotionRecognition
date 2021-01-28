@@ -1,5 +1,9 @@
 *.pyc
 *.h5
 *.log
+*.png
+*.jpg
+images
+
 __pycache__
 *env

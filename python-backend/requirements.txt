@@ -13,10 +13,10 @@ blinker                   1.4                      py37_0
 brotlipy                  0.7.0           py37h27cfd23_1003  
 bzip2                     1.0.8                h7b6447c_0  
 c-ares                    1.17.1               h27cfd23_0  
-ca-certificates           2020.12.5            ha878542_0    conda-forge
+ca-certificates           2021.1.19            h06a4308_0  
 cachetools                4.2.0              pyhd3eb1b0_0  
 cairo                     1.14.12              h8948797_3  
-certifi                   2020.12.5        py37h89c1867_1    conda-forge
+certifi                   2020.12.5        py37h06a4308_0  
 cffi                      1.14.4           py37h261ae71_0  
 chardet                   3.0.4           py37h06a4308_1003  
 click                     7.1.2              pyhd3eb1b0_0  

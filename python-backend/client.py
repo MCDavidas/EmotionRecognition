@@ -27,7 +27,7 @@ async def client():
 
                 if data['type'] == 'image':
                     img = ascii2image(data['image'])
-                    img.save('result.jpg')
+                    img.save('images/result.jpg')
                     break
                 else:
                     print(data['value'])
