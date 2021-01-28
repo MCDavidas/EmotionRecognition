@@ -1,0 +1,5 @@
+@import "~materialize-css/dist/css/materialize.min.css";
+input.black-input {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.99) !important;
+    box-shadow: 0 0px 0 0!important;
+}

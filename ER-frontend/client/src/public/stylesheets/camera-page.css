@@ -1,0 +1,31 @@
+#camera {
+    position: absolute;
+    top: 200px;
+
+}
+#buttons {
+    position: absolute;
+    top: 100px;
+    display: inline-block;
+}
+video,img{
+
+}
+button{
+    margin-right: 10px;
+    height: 50px;
+    width: 200px;
+    border: 0;
+    color: white;
+    background-color: rgba(10, 39, 75, 0.5);
+    size: 24px;
+    font-size: 24px;
+    font-family: "Century Gothic",  sans-serif;
+}
+button:active{
+    background-color: rgba(10, 39, 75, 0.5);
+}
+button:hover{
+    background-color: rgba(8, 21, 36, 0.5);
+}
+
