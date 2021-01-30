@@ -84,7 +84,7 @@ def init_server():
     logging.basicConfig(level=logging_level, format=logging_format)
 
     try:
-        with open("config.yaml", "r") as config_file:
+        with open("./config.yaml", "r") as config_file:
             configuration = yaml.load(config_file, Loader=yaml.FullLoader)
     except FileNotFoundError:
         logging.error("Config not found")
