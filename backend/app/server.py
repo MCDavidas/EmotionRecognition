@@ -5,9 +5,12 @@ import websockets
 import yaml
 from PIL import Image
 
-from converter import ascii2image, image2ascii
-from analyzer import analyze_image
+from .converter import ascii2image, image2ascii
+from .analyzer import analyze_image
 
+
+ERROR_MESSAGE = json.dumps({'type': 'error',
+                            'value': 'Incorrect input message'})
 
 connected_users = set()
 
@@ -17,12 +20,11 @@ async def handle_input_message(message):
 
     def handle_format_error():
         logging.warning('Incorrect input message')
-        return json.dumps({'type': 'error',
-                           'value': 'Incorrect input message'})
+        return ERROR_MESSAGE
 
     try:
         json_data = json.loads(message)
-    except json.JSONDecodeError:
+    except (json.JSONDecodeError, TypeError):
         return handle_format_error()
 
     if 'type' not in json_data:
@@ -32,7 +34,11 @@ async def handle_input_message(message):
         if 'image' not in json_data:
             return handle_format_error()
         else:
-            img = ascii2image(json_data['image'])
+            try:
+                img = ascii2image(json_data['image'])
+            except TypeError:
+                return handle_format_error()
+
             answer_img = await analyze_image(img)
             return json.dumps({'type': 'image',
                                'image': image2ascii(answer_img)})

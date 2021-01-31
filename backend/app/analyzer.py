@@ -3,13 +3,15 @@ import logging
 import tensorflow
 import cv2
 import numpy as np
+import os
 from PIL import Image
 
+DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')
 
-emotion_dict = {0: "Angry", 1: "Disgust", 2: "Fear",
+EMOTION_DICT = {0: "Angry", 1: "Disgust", 2: "Fear",
                 3: "Happy", 4: "Sad", 5: "Surprise", 6: "Neutral"}
 
-model = tensorflow.keras.models.load_model('./data/model.h5')
+MODEL = tensorflow.keras.models.load_model(os.path.join(DATA_PATH, 'model.h5'))
 
 
 async def analyze_image(img):
@@ -20,7 +22,10 @@ async def analyze_image(img):
 
     logging.debug(str(type(image_ndarray)))
 
-    face_cascade = cv2.CascadeClassifier('./data/haarcascade_frontface_default.xml')
+    face_cascade = cv2.CascadeClassifier(
+                   os.path.join(DATA_PATH,
+                                'haarcascade_frontface_default.xml'))
+
     faces = face_cascade.detectMultiScale(gray, 1.2, 5)
     logging.debug('faces count: ' + str(len(faces)))
 
@@ -37,12 +42,12 @@ async def analyze_image(img):
                       norm_type=cv2.NORM_L2,
                       dtype=cv2.CV_32F)
 
-        prediction = model.predict(cropped_img)
+        prediction = MODEL.predict(cropped_img)
 
         logging.info('Prediction is ' + str(prediction))
 
         cv2.putText(image_ndarray,
-                    emotion_dict[int(np.argmax(prediction))],
+                    EMOTION_DICT[int(np.argmax(prediction))],
                     (x, y),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.8,
