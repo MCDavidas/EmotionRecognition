@@ -1,6 +1,7 @@
 import pytest
 import json
 import os
+import logging
 from PIL import Image, ImageChops
 
 from ..app import converter
@@ -10,7 +11,7 @@ IMAGE2ASCII_ERROR_TESTS = ['string', 12]
 
 ASCII2IMAGE_ERROR_TESTS = ['string', 12]
 
-IMAGE_PATHS = ['images/test1.png']
+IMAGE_PATHS = ['images/test1.png', 'images/test4.png']
 
 
 @pytest.mark.parametrize('input', IMAGE2ASCII_ERROR_TESTS)

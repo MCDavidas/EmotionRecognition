@@ -1,14 +1,18 @@
 import asyncio
 import websockets
 import json
+import os
 from PIL import Image
 
-from converter import ascii2image, image2ascii
+from .converter import ascii2image, image2ascii
+
+
+IMAGES_PATH = os.path.join(os.path.dirname(__file__), 'images')
 
 
 def read_image():
-    img_path = input('Insert path to image ... ')
-    img = Image.open(img_path)
+    img_name = input('Insert image name ... ')
+    img = Image.open(os.path.join(IMAGES_PATH, img_name))
     print(img.format, img.size, img.mode)
     return img
 
@@ -27,15 +31,15 @@ async def client():
 
                 if data['type'] == 'image':
                     img = ascii2image(data['image'])
-                    img.save('images/result.jpg')
+                    img.save(os.path.join(IMAGES_PATH, 'result.jpg'))
                     break
                 else:
                     print(data['value'])
 
 
-def main():
+def init_client():
     asyncio.get_event_loop().run_until_complete(client())
 
 
 if __name__ == '__main__':
-    main()
+    init_client()

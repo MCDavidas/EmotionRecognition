@@ -39,7 +39,7 @@ async def handle_input_message(message):
             except TypeError:
                 return handle_format_error()
 
-            answer_img = await analyze_image(img)
+            answer_img, emotion = await analyze_image(img)
             return json.dumps({'type': 'image',
                                'image': image2ascii(answer_img)})
     else:

@@ -29,6 +29,7 @@ async def analyze_image(img):
     faces = face_cascade.detectMultiScale(gray, 1.2, 5)
     logging.debug('faces count: ' + str(len(faces)))
 
+    emotion = 'None'
     for (x, y, w, h) in faces:
         cv2.rectangle(image_ndarray, (x, y), (x + w, y + h), (0, 255, 0), 1)
         roi_gray = gray[y:y + h, x:x + w]
@@ -43,11 +44,12 @@ async def analyze_image(img):
                       dtype=cv2.CV_32F)
 
         prediction = MODEL.predict(cropped_img)
+        emotion = EMOTION_DICT[int(np.argmax(prediction))]
 
-        logging.info('Prediction is ' + str(prediction))
+        logging.info('Prediction is ' + emotion)
 
         cv2.putText(image_ndarray,
-                    EMOTION_DICT[int(np.argmax(prediction))],
+                    emotion,
                     (x, y),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.8,
@@ -58,7 +60,7 @@ async def analyze_image(img):
     answer_img = Image.fromarray(image_ndarray)
     answer_img.format = img.format
 
-    return answer_img
+    return (answer_img, emotion)
 
 
 if __name__ == '__main__':
