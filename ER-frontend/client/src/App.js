@@ -14,20 +14,12 @@ function App() {
     return (
         <AuthContext.Provider value ={{
             token,login,logout,userId, isAuthenticated
-<<<<<<< HEAD
         }} >
-=======
-        }}>
->>>>>>> liubov-frontend
             <Router>
                 {
                     isAuthenticated && <Navbar />
                 }
-<<<<<<< HEAD
                 <div  className="container">
-=======
-                <div className="container">
->>>>>>> liubov-frontend
                     {routes}
                 </div>
             </Router>
