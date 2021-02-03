@@ -4,16 +4,31 @@ import '../public/stylesheets/camera-page.css'
 
 
 export const CameraPage = () => {
+    var websocket = new WebSocket("ws://localhost:56789/");
     const webcamRef = React.useRef(null);
     const [imgScreenshotSrc, setImgSrc] = React.useState(null);
     const [imgInputSrc, setImgInputSrc] = React.useState(null);
     //const inputFile = React.createRef();
 
+    websocket.onmessage = function (event) {
+        var data = JSON.parse(event.data);
+        switch (data.type) {
+            case 'image':
+                var image = new Image();
+                image.src = data.image;
+                setImgSrc(image);
+                break;
+            default:
+                break;
+        }
+    };
 
     const capture = React.useCallback(() => {
         //скрин с камеры (его можно скачать)
         const tempImgSrc = webcamRef.current.getScreenshot();
         setImgSrc(tempImgSrc);
+
+        websocket.send(JSON.stringify({type: 'image', image: tempImgSrc}));
     }, [webcamRef, setImgSrc]);
 
     const handleDownload = React.useCallback(() => {
@@ -30,9 +45,7 @@ export const CameraPage = () => {
         }
     }, [imgScreenshotSrc]);
 
-
     const handleSend = React.useCallback(() => {
-
     }, []);
 
     const handleClear = React.useCallback(() => {
