@@ -1,4 +1,5 @@
 import argparse
+import logging
 
 
 def parse():
@@ -11,6 +12,12 @@ def parse():
 
 def main():
     args = parse()
+
+    logging_format = '%(asctime)s %(levelname)s: %(message)s'
+    logging_level = logging.WARNING
+    logging_filename = 'server.log'
+    logging.basicConfig(level=logging_level, format=logging_format)
+
     if args.module == 'server':
         from app import server
         server.init_server()

@@ -31,7 +31,7 @@ async def client():
 
                 if data['type'] == 'image':
                     img = ascii2image(data['image'])
-                    img.save(os.path.join(IMAGES_PATH, 'result.jpg'))
+                    img.save(os.path.join(IMAGES_PATH, 'result.' + img.format))
                     break
                 else:
                     print(data['value'])

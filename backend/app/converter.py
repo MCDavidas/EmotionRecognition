@@ -10,10 +10,14 @@ def image2ascii(img):
         result = base64.b64encode(img_data.getvalue()).decode('ascii')
     except Exception:
         raise TypeError
+
     return result
 
 
 def ascii2image(data):
+    if data[:23] == 'data:image/jpeg;base64,':
+        data = data[23:]
+
     try:
         img_data = base64.b64decode(data)
         img = Image.open(io.BytesIO(img_data))

@@ -14,9 +14,7 @@ export const CameraPage = () => {
         var data = JSON.parse(event.data);
         switch (data.type) {
             case 'image':
-                var image = new Image();
-                image.src = data.image;
-                setImgSrc(image);
+                setImgSrc('data:image/jpeg;base64,' + data.image);
                 break;
             default:
                 break;

@@ -1,24 +1,33 @@
 import asyncio
 import logging
-import tensorflow
+import tensorflow as tf
 import cv2
 import numpy as np
 import os
 from PIL import Image
+
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')
 
 EMOTION_DICT = {0: "Angry", 1: "Disgust", 2: "Fear",
                 3: "Happy", 4: "Sad", 5: "Surprise", 6: "Neutral"}
 
-MODEL = tensorflow.keras.models.load_model(os.path.join(DATA_PATH, 'model.h5'))
+MODEL = tf.keras.models.load_model(os.path.join(DATA_PATH, 'model.h5'))
+
+logging.warning('Devices available: {str}'.format(
+                str=tf.config.experimental.list_physical_devices()))
 
 
 async def analyze_image(img):
     logging.info('Starting image analyse')
 
     image_ndarray = np.asarray(img)
-    gray = cv2.cvtColor(image_ndarray, cv2.COLOR_BGR2GRAY)
+
+    try:
+        gray = cv2.cvtColor(image_ndarray, cv2.COLOR_BGR2GRAY)
+    except cv2.error:
+        logging.error('OpenCV error')
+        return img, None
 
     logging.debug(str(type(image_ndarray)))
 
@@ -60,7 +69,7 @@ async def analyze_image(img):
     answer_img = Image.fromarray(image_ndarray)
     answer_img.format = img.format
 
-    return (answer_img, emotion)
+    return answer_img, emotion
 
 
 if __name__ == '__main__':

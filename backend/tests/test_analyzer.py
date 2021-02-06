@@ -5,7 +5,8 @@ from PIL import Image
 from ..app import analyzer
 
 
-IMAGE_TESTS = [('images/test2.jpg', 'Happy')]
+IMAGE_TESTS = [('images/test2.jpg', 'Happy'), ('images/test3.png', 'Neutral'),
+               ('images/test4.jpeg', 'Fear'), ('images/test5.png', 'Neutral')]
 
 
 @pytest.mark.asyncio

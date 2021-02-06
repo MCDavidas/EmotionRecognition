@@ -18,32 +18,35 @@ connected_users = set()
 async def handle_input_message(message):
     logging.info('Starting message parsing')
 
-    def handle_format_error():
-        logging.warning('Incorrect input message')
+    def handle_format_error(explanation):
+        logging.warning('Incorrect input message. {str}'.
+                        format(str=explanation))
         return ERROR_MESSAGE
 
     try:
         json_data = json.loads(message)
     except (json.JSONDecodeError, TypeError):
-        return handle_format_error()
+        return handle_format_error('JSON decode error')
 
     if 'type' not in json_data:
-        return handle_format_error()
+        return handle_format_error('No type attribute')
 
     if json_data['type'] == 'image':
         if 'image' not in json_data:
-            return handle_format_error()
+            return handle_format_error('No image attribute')
         else:
             try:
                 img = ascii2image(json_data['image'])
             except TypeError:
-                return handle_format_error()
+                return handle_format_error('Image type error: {type}'.
+                                           format(type=type(
+                                                  json_data['image'])))
 
             answer_img, emotion = await analyze_image(img)
             return json.dumps({'type': 'image',
                                'image': image2ascii(answer_img)})
     else:
-        return handle_format_error()
+        return handle_format_error('Message type is not image')
 
 
 async def register(websocket):
@@ -78,17 +81,14 @@ async def handler(websocket, path):
             answer_message = await handle_input_message(message)
             await write_back(websocket, answer_message)
 
+    except websockets.exceptions.ConnectionClosedError:
+        logging.error(f'Connection ip={websocket.remote_address[0]}\
+                      port={websocket.remote_address[1]} closed abnormaly')
     finally:
         await unregister(websocket)
 
 
 def init_server():
-    logging_format = '%(asctime)s %(levelname)s: %(message)s'
-    logging_level = logging.WARNING
-    logging_filename = 'server.log'
-
-    logging.basicConfig(level=logging_level, format=logging_format)
-
     try:
         with open("./config.yaml", "r") as config_file:
             configuration = yaml.load(config_file, Loader=yaml.FullLoader)
