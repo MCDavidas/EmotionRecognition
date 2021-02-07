@@ -4,6 +4,7 @@
 *.png
 *.jpg
 images
+.coverage
 
 __pycache__
 *env
