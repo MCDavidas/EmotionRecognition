@@ -14,8 +14,8 @@ EMOTION_DICT = {0: "Angry", 1: "Disgust", 2: "Fear",
 
 MODEL = tf.keras.models.load_model(os.path.join(DATA_PATH, 'model.h5'))
 
-logging.warning('Devices available: {str}'.format(
-                str=tf.config.experimental.list_physical_devices()))
+logging.warning(f'Devices available: ' \
+                f'{tf.config.experimental.list_physical_devices()}')
 
 
 async def analyze_image(img):

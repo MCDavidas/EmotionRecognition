@@ -19,8 +19,7 @@ async def handle_input_message(message):
     logging.info('Starting message parsing')
 
     def handle_format_error(explanation):
-        logging.warning('Incorrect input message. {str}'.
-                        format(str=explanation))
+        logging.warning(f'Incorrect input message. {explanation}')
         return ERROR_MESSAGE
 
     try:
@@ -38,9 +37,7 @@ async def handle_input_message(message):
             try:
                 img = ascii2image(json_data['image'])
             except TypeError:
-                return handle_format_error('Image type error: {type}'.
-                                           format(type=type(
-                                                  json_data['image'])))
+                return handle_format_error('Image type error')
 
             answer_img, emotion = await analyze_image(img)
             return json.dumps({'type': 'image',
@@ -50,9 +47,8 @@ async def handle_input_message(message):
 
 
 async def register(websocket):
-    logging.info('Registering connection ip={ip}, port={port}'.
-                 format(ip=websocket.remote_address[0],
-                        port=websocket.remote_address[1]))
+    logging.info(f'Registering connection ip={websocket.remote_address[0]},' \
+                 f'port={websocket.remote_address[1]}')
     connected_users.add(websocket)
 
 
@@ -64,9 +60,8 @@ async def unregister(websocket):
 
 
 async def write_back(websocket, message):
-    logging.info('Sending message to client ip={ip}, port={port}'.
-                 format(ip=websocket.remote_address[0],
-                        port=websocket.remote_address[1]))
+    logging.info(f'Sending message to ip={websocket.remote_address[0]},' \
+                 f'port={websocket.remote_address[1]}')
     await websocket.send(message)
 
 
@@ -82,8 +77,8 @@ async def handler(websocket, path):
             await write_back(websocket, answer_message)
 
     except websockets.exceptions.ConnectionClosedError:
-        logging.error(f'Connection ip={websocket.remote_address[0]}\
-                      port={websocket.remote_address[1]} closed abnormaly')
+        logging.error(f'Connection ip={websocket.remote_address[0]}' \
+                      f'port={websocket.remote_address[1]} closed abnormaly')
     finally:
         await unregister(websocket)
 
