@@ -5,6 +5,7 @@
     //margin-top: 50px;
     margin-bottom: 50px;
     display: flex;
+
 }
 .FileInput {
 
@@ -13,13 +14,6 @@
     margin-bottom: 50px;
     display: flex;
     flex-direction: column;
-}
-.ServerSender {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    margin-top: 50px;
-    //margin-bottom: 50px;
 }
 .camera {
     align-self: flex-start;
@@ -30,9 +24,7 @@
 .camera video{
     margin-top: 10px;
 }
-.ScreenshotButton{
-    margin-top: 10px;
-}
+
 .screenshotImage {
     display: flex;
     flex-direction: column;
@@ -42,7 +34,8 @@
 .screenshotImage img{
     margin-top: 10px;
 }
-.DownloadButton{
+
+.SendButton{
     margin-top: 10px;
 }
 .FileInput img{

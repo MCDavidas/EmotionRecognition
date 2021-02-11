@@ -1,8 +1,14 @@
-# ERProject
-Gif for ERTeam
 
-Запуск проекта 
+# Start project
 
-В консоли( в корневой папке) ввести npm run dev
+from root directoty
+`npm run dev`
+# Connect with backend
+In [`client/src/components/WebCamera.js`](https://github.com/QwaYCh/ERProject/blob/liubov-frontend/ER-frontend/client/src/components/WebCamera.js) method `sendScreenshot()` 1st arg is your `url`
+``` javascript
+const screenshot = await request(url, 'POST', {type: 'image', image: imgScreenshotSrc}, {
+                Authorization: `Bearer ${auth.token}`
+            })
+``` 
 
-Чтобы сервер загрузился нужно подключиться к БД, для этого надо написать мне свой IP (это нужно для доспута к БД)
+Or create new varible in [`config/default.json`](https://github.com/QwaYCh/ERProject/blob/liubov-frontend/ER-frontend/config/default.json)
