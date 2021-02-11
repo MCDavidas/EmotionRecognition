@@ -1,9 +1,11 @@
-import React from 'react'
-import Webcam from "react-webcam";
+import React, {useContext} from 'react'
 import '../public/stylesheets/camera-page.css'
-
+import {WebCamera} from "../components/WebCamera";
+import {ImageInput} from "../components/ImageInput";
 
 export const CameraPage = () => {
+
+/*
     var websocket = new WebSocket("ws://localhost:56789/");
     const webcamRef = React.useRef(null);
     const [imgScreenshotSrc, setImgSrc] = React.useState(null);
@@ -68,50 +70,14 @@ export const CameraPage = () => {
 
 
     }
+*/
 
     return (
         <>
             <h2>Image from camera</h2>
-            <div className="Webcam">
-                <div className="camera">
-                    <Webcam
-                        audio={false}
-                        ref={webcamRef}
-                        screenshotFormat="image/jpeg"
-                    />
-                    <button className="ScreenshotButton" onClick={capture}>Screenshot</button>
-                </div>
-                <div className="screenshotImage">
-                    {
-                        imgScreenshotSrc
-                        && (<img src={imgScreenshotSrc}/>)
-                    }
-                    {
-                        imgScreenshotSrc
-                        && (<button className="DownloadButton" onClick={handleDownload}>Download</button>)
-                    }
-
-                </div>
-            </div>
+            <WebCamera/>
             <h2>Image from file system</h2>
-            <div className="FileInput">
-                <input
-                    className="fileInput"
-                    id="fileInput"
-                    type="file"
-                    onChange={handleDisplay}
-                />
-                <label className="ImageInputButton" htmlFor="fileInput">Image input</label>
-                <img className="inputImage" src={imgInputSrc} height="500" alt=""/>
-                {
-                    imgInputSrc && (<button className="ClearButton" onClick={handleClear}>Clear</button>)
-                }
-            </div>
-            <h2>Send image on server</h2>
-            <div className="ServerSender">
-                <button onClick={handleSend}>Send</button>
-            </div>
-
+            <ImageInput/>
         </>
     );
 
