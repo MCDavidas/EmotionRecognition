@@ -2,7 +2,6 @@ import asyncio
 import json
 import logging
 import websockets
-import yaml
 from PIL import Image
 
 from .converter import ascii2image, image2ascii
@@ -83,43 +82,10 @@ async def handler(websocket, path):
         await unregister(websocket)
 
 
-def init_server():
-    try:
-        with open("./config.yaml", "r") as config_file:
-            configuration = yaml.load(config_file, Loader=yaml.FullLoader)
-    except FileNotFoundError:
-        logging.error("Config not found")
-        return
-
-    try:
-        if 'logging' in configuration:
-
-            if 'level' in configuration['logging']:
-                if configuration['logging']['level'] == 'DEBUG':
-                    logging_level = logging.DEBUG
-                elif configuration['logging']['level'] == 'INFO':
-                    logging_level = logging.INFO
-                elif configuration['logging']['level'] == 'WARNING':
-                    logging_level = logging.WARNING
-                elif configuration['logging']['level'] == 'ERROR':
-                    logging_level = logging.ERROR
-                elif configuration['logging']['level'] == 'CRITICAL':
-                    logging_level = logging.CRITICAL
-                else:
-                    raise Exception
-
-            logging.getLogger().setLevel(logging_level)
-
-        logging.info('Opening websocket')
-        start_server = websockets.serve(handler,
-                                        configuration['server']['host'],
-                                        configuration['server']['port'],
-                                        ping_interval=None)
-        logging.info('Websocket is serving')
-
-    except Exception:
-        logging.error("Incorrect config file")
-        return
+def init_server(host, port):
+    logging.info('Opening websocket')
+    start_server = websockets.serve(handler, host, port, ping_interval=None)
+    logging.info('Websocket is serving')
 
     logging.info('Starting event loop')
     try:
