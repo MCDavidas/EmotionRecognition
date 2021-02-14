@@ -4,18 +4,27 @@ import {AuthContext} from "../context/AuthContext";
 import Webcam from "react-webcam";
 
 export const WebCamera = () => {
+    const websocket = new WebSocket("ws://localhost:56789/");
     const webcamRef = useRef(null);
     const [imgScreenshotSrc, setImgSrc] = useState(null);
     const [intervalID, setIntervalID] = useState(null);
     const {request} = useHttp()
     const auth = useContext(AuthContext)
 
+    websocket.onmessage = function (event) {
+        var data = JSON.parse(event.data);
+        switch (data.type) {
+            case 'image':
+                setImgSrc('data:image/jpeg;base64,' + data.image);
+                break;
+            default:
+                break;
+        }
+    };
+
     async function sendScreenshot() {
         const tempImgSrc = webcamRef.current.getScreenshot();
-        setImgSrc(tempImgSrc);
-        const screenshot = await request('/api/screenshot/', 'POST', {type: 'image', image: imgScreenshotSrc}, {
-            Authorization: `Bearer ${auth.token}`
-        })
+        websocket.send(JSON.stringify({type: 'image', image: tempImgSrc}));
     }
 
     const handleSendScreenshot = useCallback(async () => {
@@ -23,8 +32,7 @@ export const WebCamera = () => {
     },[webcamRef,imgScreenshotSrc])
 
     const handleStartRecord = useCallback(async () => {
-        setIntervalID(setInterval(sendScreenshot, 1000))
-
+        setIntervalID(setInterval(sendScreenshot, 600))
     },[webcamRef,imgScreenshotSrc]);
 
     const handleStopRecord = useCallback(async () => {
@@ -78,6 +86,12 @@ export const WebCamera = () => {
                     {
                         imgScreenshotSrc
                         && (<button className="DownloadButton" onClick={handleDownload}>Download</button>)
+                    }
+                </div>
+                <div className="screenshotImage">
+                    {
+                        imgScreenshotSrc
+                        && (<img src={imgScreenshotSrc}/>)
                     }
                 </div>
 
