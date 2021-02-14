@@ -33,6 +33,12 @@ class DBManager:
         for line in open(schema_file, 'r'):
             self.cursor.execute(line)
 
+    def insert_photo(self, user_id, emotion):
+        logging.info(f'Inserting photo into DB user_id={user_id}')
+        self.cursor.execute("INSERT INTO photos (user_id,emotion)" +
+                            "VALUES (%s,%s)", (user_id, emotion))
+        self.connection.commit()
+
 
 if __name__ == '__main__':
     logging_format = '%(asctime)s %(levelname)s: %(message)s'
@@ -42,3 +48,6 @@ if __name__ == '__main__':
     logging.info('Creating DB manager')
     manager = DBManager()
     manager.populate_db()
+    manager.insert_photo(0, 0)
+    manager.insert_photo(1, 1)
+    manager.insert_photo(2, 2)
