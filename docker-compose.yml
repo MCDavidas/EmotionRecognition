@@ -1,10 +1,23 @@
 version: "3.8"
 
 services:
-  mongo:
-    container_name: mongodb
+  mariadb:
+    image: mariadb:latest
+    command: '--default-authentication-plugin=auth_ed25519'
     restart: always
+    secrets:
+      - mariadb-password
+    volumes:
+      - mariadata:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=ERProject
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mariadb-password
+
+  mongodb:
     image: mongo:latest
+    restart: always
     volumes:
       - mongodata:/data/db
     ports:
@@ -12,3 +25,8 @@ services:
 
 volumes:
   mongodata:
+  mariadata:
+
+secrets:
+  mariadb-password:
+    file: secrets/mariadb-password.txt
