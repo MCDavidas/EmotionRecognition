@@ -22,13 +22,13 @@ class DBManager:
                     port=3306,
                     database=database,
                 )
+                self.cursor = self.connection.cursor()
         except mariadb.Error as e:
             logging.error(f"Error connecting to MariaDB Platform: {e}")
         finally:
             logging.info(f'Connection with mariadb is established')
 
         pf.close()
-        self.cursor = self.connection.cursor()
 
     # def __del__(self):
     #     self.connection.close()
@@ -40,13 +40,16 @@ class DBManager:
             self.cursor.execute(line)
 
     def insert_photo(self, user_id, emotion):
-        logging.info(f'Inserting photo into DB user_id={user_id}')
-        try:
-            self.cursor.execute("INSERT INTO photos (user_id,emotion)" +
-                                "VALUES (%s,%s)", (user_id, emotion))
-        except mariadb.Error as e:
-            logging.error(f"Error with mariadb: {e}")
-        self.connection.commit()
+        if hasattr(self, 'cursor'):
+            logging.info(f'Inserting photo into DB user_id={user_id}')
+            try:
+                self.cursor.execute("INSERT INTO photos (user_id,emotion)" +
+                                    "VALUES (%s,%s)", (user_id, emotion))
+            except mariadb.Error as e:
+                logging.error(f"Error with mariadb: {e}")
+            self.connection.commit()
+        else:
+            logging.error('Database is not connected')
 
 
 if __name__ == '__main__':
