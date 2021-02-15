@@ -1,10 +1,12 @@
+import os
 import asyncio
 import logging
 import tensorflow as tf
 import cv2
 import numpy as np
-import os
 from PIL import Image
+
+from .db import DBManager
 
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')
@@ -14,7 +16,9 @@ EMOTION_DICT = {0: "Angry", 1: "Disgust", 2: "Fear",
 
 MODEL = tf.keras.models.load_model(os.path.join(DATA_PATH, 'model.h5'))
 
-logging.warning(f'Devices available: ' \
+DBMANAGER = DBManager()
+
+logging.warning(f'Devices available: '
                 f'{tf.config.experimental.list_physical_devices()}')
 
 
@@ -65,6 +69,8 @@ async def analyze_image(img):
                     (0, 255, 0),
                     1,
                     cv2.LINE_AA)
+
+        DBMANAGER.insert_photo(0, emotion)
 
     answer_img = Image.fromarray(image_ndarray)
     answer_img.format = img.format
