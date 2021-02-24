@@ -1,6 +1,16 @@
 version: "3.8"
 
 services:
+  app:
+    build:
+      context: ./backend
+    secrets:
+      - mariadb-password
+    networks:
+      - backnet
+    ports:
+      - 56789:56789
+
   mariadb:
     image: mariadb:latest
     command: '--default-authentication-plugin=auth_ed25519'
@@ -9,8 +19,8 @@ services:
       - mariadb-password
     volumes:
       - mariadata:/var/lib/mysql
-    ports:
-      - 3306:3306
+    networks:
+      - backnet
     environment:
       - MYSQL_DATABASE=ERProject
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mariadb-password
@@ -20,8 +30,8 @@ services:
     restart: always
     volumes:
       - mongodata:/data/db
-    ports:
-      - 27017:27017
+    networks:
+      - frontnet
 
 volumes:
   mongodata:
@@ -30,3 +40,7 @@ volumes:
 secrets:
   mariadb-password:
     file: secrets/mariadb-password.txt
+
+networks:
+  backnet:
+  frontnet:
