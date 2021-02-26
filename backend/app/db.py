@@ -10,7 +10,7 @@ DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')
 class DBManager:
     def __init__(self, database='ERProject',
                  host="mariadb", port=3306, user="root",
-                 password_file=os.path.join(DATA_PATH, 'mariadb-pw.txt')):
+                 password_file=os.path.join(DATA_PATH, '/run/secrets/mariadb-password')):
         logging.info(f'Connecting to mariadb {host}, {port}, {database}')
         pf = open(password_file, 'r')
 
