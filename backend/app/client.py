@@ -18,7 +18,7 @@ def read_image():
 
 
 async def client():
-    uri = "ws://localhost:56789"
+    uri = "ws://0.0.0.0:56789"
     async with websockets.connect(uri, ping_interval=None) as websocket:
         while True:
             img = read_image()

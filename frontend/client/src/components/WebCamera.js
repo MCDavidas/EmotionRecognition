@@ -4,7 +4,7 @@ import {AuthContext} from "../context/AuthContext";
 import Webcam from "react-webcam";
 
 export const WebCamera = () => {
-    const websocket = new WebSocket("ws://localhost:56789/");
+    const websocket = new WebSocket("ws://0.0.0.0:56789/");
     const webcamRef = useRef(null);
     const [imgScreenshotSrc, setImgSrc] = useState(null);
     const [intervalID, setIntervalID] = useState(null);

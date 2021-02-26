@@ -25,6 +25,14 @@ services:
       - MYSQL_DATABASE=ERProject
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mariadb-password
 
+  node:
+    build:
+      context: ./frontend
+    networks:
+      - frontnet
+    ports:
+      - 3000:3000
+
   mongodb:
     image: mongo:latest
     restart: always
